@@ -23,7 +23,7 @@
 ```
 
 `docker-compose.yml`
-```
+```yml
 version: '3.8'
 
 services:
