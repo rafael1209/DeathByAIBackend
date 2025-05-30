@@ -42,4 +42,16 @@ public class UserRepository(IMongoDbContext dbContext) : IUserRepository
 
         return user;
     }
+
+    public async Task<List<User>> GetLeaders()
+    {
+        var sort = Builders<User>.Sort.Descending(u => u.Points);
+        var topUsers = await _users.Find(FilterDefinition<User>.Empty)
+            .Sort(sort)
+            .Limit(10)
+            .ToListAsync();
+
+        return topUsers;
+    }
+
 }

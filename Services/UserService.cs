@@ -46,4 +46,29 @@ public class UserService(IUserRepository userRepository) : IUserService
 
         return createdUser;
     }
+
+    public async Task<Leaderboard> GetLeaderboard()
+    {
+        var leaders = await userRepository.GetLeaders();
+
+        var entries = leaders.Select(u => new LeaderboardEntry
+        {
+            User = new UserDto
+            {
+                Id = u.Id.ToString(),
+                Username = u.Name,
+                AvatarUrl = u.AvatarUrl
+            },
+            Score = u.Points,
+            GreenPoints = u.GreenPoints
+        }).ToList();
+
+        var leaderboard = new Leaderboard
+        {
+            LastUpdated = DateTime.UtcNow,
+            Entries = entries
+        };
+
+        return leaderboard;
+    }
 }
