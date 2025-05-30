@@ -4,17 +4,20 @@
 ```json
 {
   "Google": {
-    "ClientId": "",
-    "ClientSecret": "",
-    "RedirectUri": ""
+    "ClientId": "#################################",
+    "ClientSecret": "#######################################",
+    "RedirectUri": "##########################"
   },
   "MongoDb": {
-    "ConnectionString": "mongodb://localhost:27017",
+    "ConnectionString": "mongodb://###############",
     "DatabaseName": "death-by-ai-bd"
   },
   "Jwt": {
-    "SecretKey": "",
+    "SecretKey": "#############################",
     "Issuer": "mr.rafaello"
+  },
+  "ChatGpt": {
+    "ConnectionString": "sk-##############################################"
   }
 }
 ```
