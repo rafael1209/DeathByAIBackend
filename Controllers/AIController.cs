@@ -1,5 +1,6 @@
 ﻿using DeathByAIBackend.Interfaces;
 using DeathByAIBackend.Models;
+using DeathByAIBackend.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeathByAIBackend.Controllers
@@ -11,8 +12,8 @@ namespace DeathByAIBackend.Controllers
         [HttpPost("start")]
         public async Task<IActionResult> StartSimulation([FromBody] StartupInitDto dto)
         {
-            var result = await aiService.SendTextQueryAsync("TEST");
-            return Ok(new { sessionId = Guid.NewGuid() });
+            var result = await aiService.GenerateProblemsAsync(new ChatGptService.StartupInput(dto.Location, dto.ProjectName, dto.Idea), 5);
+            return Ok(new { Result = result });
         }
     }
 }
