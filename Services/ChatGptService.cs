@@ -1,9 +1,8 @@
-﻿using System;
-using System.Text.Json;
-using DeathByAIBackend.Interfaces;
+﻿using DeathByAIBackend.Interfaces;
 using NJsonSchema;
 using OpenAI;
 using OpenAI.Chat;
+using System.Text.Json;
 using JsonSchema = NJsonSchema.JsonSchema;
 
 namespace DeathByAIBackend.Services;
@@ -74,11 +73,13 @@ public sealed class ChatGptService : IAIService
 
                     "Rules for every \\\"description\\\":\\n" +
                     "• Write 2–4 full sentences.\\n" +
-                    "• Insert the user's location string exactly once, at a random position in the text (not always at the start).\\n" +
-                    "• Describe 1–2 concrete pain-points; whenever relevant, mention local regulations, cultural or infrastructure specifics for that location.\\n" +
+                    "• Insert the user's location string exactly once, at a random position.\\n" +
+                    "• Include 1–2 concrete pain-points.\\n" +
+                    "• Reference at least one specific local element: a law or regulation (cite its official name/number), " +
+                    "a notable recent event (within the last 5 years), or a macro-economic indicator that affects startups in that location.\\n" +
                     "• End with the exact question: \\\"How will you solve it?\\\"\\n\\n" +
 
-                    "Do NOT add, remove, or rename any fields. Do NOT output anything except the JSON object."
+                    "Do NOT add, remove, or rename fields. Output the JSON object only."
                 ),
         new UserChatMessage(
                     $"Location: {input.Location}\n" +
