@@ -31,9 +31,17 @@ public sealed class ChatGptService : IAIService
 
     // ---------- business-problem pipeline ----------
 
-    public record StartupInput(string Country, string City, string ProjectName, string Idea);
-    public record Problem(string Title, string Description);
-    public record ProblemsPayload(List<Problem> Problems);
+    public record StartupInput(string Location, string ProjectName, string Idea);
+    public class Problem
+    {
+        public string title { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+    }
+
+    public class ProblemsPayload
+    {
+        public List<Problem> problems { get; set; } = new List<Problem>();
+    }
 
     public async Task<ProblemsPayload> GenerateProblemsAsync(
         StartupInput input,
@@ -57,18 +65,33 @@ public sealed class ChatGptService : IAIService
             new ChatMessage[]
             {
                 new SystemChatMessage(
-                    $"Generate exactly {count} potential problems a startup might face. " +
-                    "Return JSON that matches the provided schema only."),
-                new UserChatMessage(
-                    $"Country: {input.Country}\n" +
-                    $"City: {input.City}\n" +
+                    $"Generate exactly {count} concrete challenges that any startup might encounter worldwide. " +
+                    "Return ONLY the following JSON structure (no extra text):\\n\\n" +
+                    "{{\\n  \\\"result\\\": {{\\n    \\\"problems\\\": [ /* exactly {count} objects */ ]\\n  }}\\n}}\\n\\n" +
+
+                    "Each element of \\\"problems\\\" MUST match exactly:\\n" +
+                    "{{\\n  \\\"title\\\": \\\"<short title>\\\",\\n  \\\"description\\\": \\\"<detailed explanation>\\\"\\n}}\\n\\n" +
+
+                    "Rules for every \\\"description\\\":\\n" +
+                    "• Write 2–4 full sentences.\\n" +
+                    "• Insert the user's location string exactly once, at a random position in the text (not always at the start).\\n" +
+                    "• Describe 1–2 concrete pain-points; whenever relevant, mention local regulations, cultural or infrastructure specifics for that location.\\n" +
+                    "• End with the exact question: \\\"How will you solve it?\\\"\\n\\n" +
+
+                    "Do NOT add, remove, or rename any fields. Do NOT output anything except the JSON object."
+                ),
+        new UserChatMessage(
+                    $"Location: {input.Location}\n" +
                     $"Project: {input.ProjectName}\n" +
                     $"Idea: {input.Idea}")
             },
             options);
 
         var raw = completion.Value.Content[0].Text;
-        return JsonSerializer.Deserialize<ProblemsPayload>(raw)!;
+
+        var result = JsonSerializer.Deserialize<ProblemsPayload>(raw)!;
+
+        return result;
     }
 
     // ---------- schema builder ----------

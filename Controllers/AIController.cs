@@ -12,9 +12,8 @@ namespace DeathByAIBackend.Controllers
         [HttpPost("start")]
         public async Task<IActionResult> StartSimulation([FromBody] StartupInitDto dto)
         {
-            //var result = await aiService.SendTextQueryAsync("TEST");
-            var result = await aiService.GenerateProblemsAsync(new ChatGptService.StartupInput("Russia", "Челябинск", "КриптоСтартап", "Я хочу открыть крипто стартап"), 5);
-            return Ok(new { sessionId = Guid.NewGuid() });
+            var result = await aiService.GenerateProblemsAsync(new ChatGptService.StartupInput(dto.Location, dto.ProjectName, dto.Idea), 5);
+            return Ok(new { Result = result });
         }
     }
 }
