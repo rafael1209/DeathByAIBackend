@@ -43,6 +43,7 @@ public class Startup
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IOAuthProvider, GoogleAuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAIService, ChatGptService>();
 
         services.AddCors(options =>
         {
