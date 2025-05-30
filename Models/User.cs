@@ -21,10 +21,10 @@ public class User
     public string AuthToken { get; set; }
 
     [BsonElement("points")]
-    public int Points { get; set; } = 0;
+    public int Points { get; set; } = 0;//Todo use this for ai, if startup die don't give user points
 
     [BsonElement("greenPoints")]
-    public int GreenPoints { get; set; } = 0;
+    public int GreenPoints { get; set; } = 0;//Todo use this for ai if startup eco-friendly 
 
     [BsonElement("createdAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

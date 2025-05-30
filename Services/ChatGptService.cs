@@ -131,4 +131,157 @@ public sealed class ChatGptService : IAIService
 
         return schema.ToJson();
     }
+
+
+
+
+    /* ---------- модели ---------- */
+
+    public record UserSolution(string text);
+
+    public class Evaluation
+    {
+        public int score { get; set; }          // 0-100
+        public string feedback { get; set; } = string.Empty;
+        public string future { get; set; } = string.Empty;
+    }
+
+    public class EvaluationPayload
+    {
+        public List<Evaluation> evaluations { get; set; } = new();
+        public bool survives { get; set; }
+    }
+
+    /* ---------- публичный API ---------- */
+
+    public async Task<EvaluationPayload> EvaluateSolutionsAsync(
+        StartupInput startup,
+        ProblemsPayload problems,
+        IEnumerable<UserSolution> solutions,
+        float temperature = .7f)
+    {
+        var answers = solutions.ToArray();
+        if (answers.Length != problems.problems.Count)
+            throw new ArgumentException("answers count mismatch");
+
+        var schema = CreateEvaluationSchema(answers.Length);
+
+        var options = new ChatCompletionOptions
+        {
+            Temperature = temperature,
+            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+                jsonSchemaFormatName: "evaluation",
+                jsonSchema: BinaryData.FromString(schema),
+                jsonSchemaIsStrict: true)
+        };
+
+        const string SysPromptTemplate = """
+                                         You are a strict VC panel. Score each proposed solution from 0-100 (higher = better).
+                                         Rule-of-thumb:
+                                         • 0-39 – fatal • 40-69 – mediocre • 70-89 – strong • 90-100 – excellent.
+
+                                         For every problem/solution return:
+                                         {{
+                                           "score": <int 0-100>,
+                                           "feedback": "<1–2 sentences>",
+                                           "future": "<1–2 sentences describing what happens to the startup in the next 6–12 months>"
+                                         }}
+
+                                         After scoring decide:
+                                           "survives": true if avg(score) ≥ 60 AND no single score < 30, else false.
+
+                                         Output **only**:
+                                         {{
+                                           "evaluations": [ …exactly {0} objects… ],
+                                           "survives": <bool>
+                                         }}
+                                         """;
+
+        var sysPrompt = string.Format(SysPromptTemplate, answers.Length);
+
+        var userPrompt = BuildUserPrompt(startup, problems, answers);
+
+        var chat = _client.GetChatClient(Model);
+        var completion = await chat.CompleteChatAsync(
+            new ChatMessage[]
+            {
+                new SystemChatMessage(sysPrompt),
+                new UserChatMessage(userPrompt)
+            },
+            options);
+
+        var raw = completion.Value.Content[0].Text;
+        return JsonSerializer.Deserialize<EvaluationPayload>(raw)!;
+    }
+
+    /* ---------- utils ---------- */
+
+    private static string BuildUserPrompt(
+        StartupInput startup,
+        ProblemsPayload problems,
+        IReadOnlyList<UserSolution> answers)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"Location: {startup.Location}");
+        sb.AppendLine($"Project: {startup.ProjectName}");
+        sb.AppendLine($"Idea: {startup.Idea}");
+        sb.AppendLine();
+
+        for (var i = 0; i < problems.problems.Count; i++)
+        {
+            sb.AppendLine($"Problem {i + 1}: {problems.problems[i].title}");
+            sb.AppendLine(problems.problems[i].description);
+            sb.AppendLine($"User solution: {answers[i].text}");
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
+    }
+
+    private static string CreateEvaluationSchema(int count)
+    {
+        var evalSchema = new JsonSchema
+        {
+            Type = JsonObjectType.Object,
+            AllowAdditionalProperties = false
+        };
+        evalSchema.Properties["score"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.Integer,
+            Minimum = 0,
+            Maximum = 100,
+            IsRequired = true
+        };
+        evalSchema.Properties["feedback"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.String,
+            IsRequired = true
+        };
+        evalSchema.Properties["future"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.String,
+            IsRequired = true
+        };
+
+        var schema = new JsonSchema
+        {
+            Type = JsonObjectType.Object,
+            AllowAdditionalProperties = false
+        };
+        schema.Properties["evaluations"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.Array,
+            MinItems = count,
+            MaxItems = count,
+            Item = evalSchema,
+            IsRequired = true
+        };
+        schema.Properties["survives"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.Boolean,
+            IsRequired = true
+        };
+
+        return schema.ToJson();
+    }
 }
