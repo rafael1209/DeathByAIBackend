@@ -8,4 +8,5 @@ public interface IUserService
     Task<UserInfo> GetUserInfo(User user);
     Task<User?> TryGetUserByEmail(string email);
     Task<User> CreateUser(User user);
+    Task<Leaderboard> GetLeaderboard();
 }
