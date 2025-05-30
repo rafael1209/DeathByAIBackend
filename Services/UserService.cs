@@ -16,6 +16,20 @@ public class UserService(IUserRepository userRepository) : IUserService
         return user;
     }
 
+    public async Task<UserInfo> GetUserInfo(User user)
+    {
+        var userInfo = new UserInfo
+        {
+            Id = user.Id.ToString(),
+            Nickname = user.Name,
+            AvatarUrl = user.AvatarUrl,
+            Points = user.Points,
+            GreenPoints = user.GreenPoints
+        };
+
+        return userInfo;
+    }
+
     public async Task<User?> TryGetUserByEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DeathByAIBackend.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DeathByAIBackend.Controllers;
 
@@ -40,24 +41,4 @@ public class LeaderboardController : Controller
 
         return Ok(leaderboard);
     }
-}
-
-public class Leaderboard
-{
-    public List<LeaderboardEntry> Entries { get; set; } = [];
-    public DateTime LastUpdated { get; set; }
-}
-
-public class LeaderboardEntry
-{
-    public UserDto User { get; set; }
-    public int Score { get; set; }
-    public int GreenPoints { get; set; }
-}
-
-public class UserDto
-{
-    public string Id { get; set; }
-    public string Username { get; set; }
-    public string AvatarUrl { get; set; }
 }

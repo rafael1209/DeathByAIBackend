@@ -20,6 +20,12 @@ public class User
     [BsonElement("authToken")]
     public string AuthToken { get; set; }
 
+    [BsonElement("points")]
+    public int Points { get; set; } = 0;
+
+    [BsonElement("greenPoints")]
+    public int GreenPoints { get; set; } = 0;
+
     [BsonElement("createdAt")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
