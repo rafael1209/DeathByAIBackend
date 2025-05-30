@@ -41,6 +41,7 @@ public class Startup
 
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IOAuthProvider, GoogleAuthService>();
         services.AddScoped<IUserService, UserService>();
 
         services.AddCors(options =>
