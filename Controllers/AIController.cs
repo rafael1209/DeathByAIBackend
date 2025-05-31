@@ -28,7 +28,7 @@ namespace DeathByAIBackend.Controllers
             var totalScore = result.evaluations.Sum(e => e.score);
             var totalEco = result.evaluations.Sum(e => e.eco);
 
-            await userRepository.AddPointsAsync(dto.AuthToken, totalScore, totalEco);
+            await userRepository.AddPointsAsync(dto.StartupInitDto.AuthToken, totalScore, totalEco);
 
             return Ok(new { Result = result });
         }

@@ -4,8 +4,6 @@ namespace DeathByAIBackend.Models
 {
     public class EvaluateDto
     {
-        public string AuthToken { get; set; } = string.Empty;
-
         public StartupInitDto StartupInitDto { get; set; } = new StartupInitDto();
 
         public ProblemsPayload ProblemsPayload { get; set; } = new ProblemsPayload();
