@@ -54,4 +54,13 @@ public class UserRepository(IMongoDbContext dbContext) : IUserRepository
         return topUsers;
     }
 
+    public async Task<UpdateResult> AddPointsAsync(string authToken, int addPoints, int addGreen)
+    {
+        var f = Builders<User>.Filter.Eq(u => u.AuthToken, authToken);
+        var u = Builders<User>.Update
+            .Inc(u => u.Points, addPoints)
+            .Inc(u => u.GreenPoints, addGreen);
+
+        return await _users.UpdateOneAsync(f, u);
+    }
 }

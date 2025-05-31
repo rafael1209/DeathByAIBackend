@@ -1,6 +1,7 @@
 ﻿using DeathByAIBackend.Interfaces;
 using DeathByAIBackend.Models;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace DeathByAIBackend.Services;
 

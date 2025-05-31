@@ -7,7 +7,7 @@ namespace DeathByAIBackend.Controllers
 {
     [Route("api/v1/ai")]
     [ApiController]
-    public class AIController(IAIService aiService) : Controller
+    public class AIController(IAIService aiService, IUserRepository userRepository) : Controller
     {
         [HttpPost("start")]
         public async Task<IActionResult> StartSimulation([FromBody] StartupInitDto dto)
@@ -24,6 +24,12 @@ namespace DeathByAIBackend.Controllers
             var result = await aiService.EvaluateSolutionsAsync(new ChatGptService.StartupInput(
                 dto.StartupInitDto.Location, dto.StartupInitDto.ProjectName,
                 dto.StartupInitDto.Idea), dto.ProblemsPayload, dto.UserSolutions);
+
+            var totalScore = result.evaluations.Sum(e => e.score);
+            var totalEco = result.evaluations.Sum(e => e.eco);
+
+            await userRepository.AddPointsAsync(dto.AuthToken, totalScore, totalEco);
+
             return Ok(new { Result = result });
         }
     }
