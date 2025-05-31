@@ -151,6 +151,7 @@ public sealed class ChatGptService : IAIService
     {
         public List<Evaluation> evaluations { get; set; } = new();
         public List<Problem> problems { get; set; } = new();
+        public UserSolution[]? solutions { get; set; }
         public bool survives { get; set; }
         public string reference { get; set; } = string.Empty;
     }
@@ -227,6 +228,7 @@ public sealed class ChatGptService : IAIService
         var payload = JsonSerializer.Deserialize<EvaluationPayload>(raw)!;
 
         payload.problems = problems.problems;
+        payload.solutions = answers;
 
         return payload;
     }
