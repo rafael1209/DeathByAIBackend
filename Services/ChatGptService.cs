@@ -141,8 +141,8 @@ public sealed class ChatGptService : IAIService
 
     public class Evaluation
     {
-        public int score { get; set; }          // 0-100
-        public int eco { get; set; }          // 0-100
+        public int score { get; set; }      // 0-100
+        public int eco { get; set; }      // 0-100
         public string feedback { get; set; } = string.Empty;
         public string future { get; set; } = string.Empty;
     }
@@ -151,6 +151,7 @@ public sealed class ChatGptService : IAIService
     {
         public List<Evaluation> evaluations { get; set; } = new();
         public bool survives { get; set; }
+        public string reference { get; set; } = string.Empty;
     }
 
     /* ---------- публичный API ---------- */
@@ -182,10 +183,10 @@ public sealed class ChatGptService : IAIService
                                          • 0-39 – fatal • 40-69 – mediocre • 70-89 – strong • 90-100 – excellent.
 
                                          Also assign **eco points** (0-100) that measure how effectively the solution benefits
-                                         the environment (higher = greater positive ecological impact).  
+                                         the environment (higher = greater positive ecological impact).
                                          Eco points do **not** affect the survive decision.
 
-                                         For every problem/solution return:
+                                         For every problem/solution return **exactly**:
                                          {{
                                            "score": <int 0-100>,
                                            "eco": <int 0-100>,
@@ -194,12 +195,17 @@ public sealed class ChatGptService : IAIService
                                          }}
 
                                          After scoring decide:
-                                           "survives": true if avg(score) ≥ 60 AND no single score < 30, else false.
+                                           "survives": true if avg(score) ≥ 60 **and** no single score < 30, else false.
 
-                                         Output **only**:
+                                         Add **reference** – a Google search URL that shows information about a well-known,
+                                         successful company from the *same country* **and** the *same industry*:
+                                           https://www.google.com/search?q=<Company+Name>
+
+                                         Return **only**:
                                          {{
                                            "evaluations": [ …exactly {0} objects… ],
-                                           "survives": <bool>
+                                           "survives": <bool>,
+                                           "reference": "<Google-search URL>"
                                          }}
                                          """;
 
@@ -276,12 +282,12 @@ public sealed class ChatGptService : IAIService
             IsRequired = true
         };
 
-        var schema = new JsonSchema
+        var root = new JsonSchema
         {
             Type = JsonObjectType.Object,
             AllowAdditionalProperties = false
         };
-        schema.Properties["evaluations"] = new JsonSchemaProperty
+        root.Properties["evaluations"] = new JsonSchemaProperty
         {
             Type = JsonObjectType.Array,
             MinItems = count,
@@ -289,12 +295,17 @@ public sealed class ChatGptService : IAIService
             Item = evalSchema,
             IsRequired = true
         };
-        schema.Properties["survives"] = new JsonSchemaProperty
+        root.Properties["survives"] = new JsonSchemaProperty
         {
             Type = JsonObjectType.Boolean,
             IsRequired = true
         };
+        root.Properties["reference"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.String, // URL
+            IsRequired = true
+        };
 
-        return schema.ToJson();
+        return root.ToJson();
     }
 }
