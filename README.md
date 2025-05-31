@@ -1,5 +1,8 @@
 # DeathByAIBackend
 
+![image](https://github.com/user-attachments/assets/49b4cf8e-0e34-4607-a902-14678045a94a)
+
+
 `appsettings.json`
 ```json
 {
