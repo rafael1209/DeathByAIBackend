@@ -150,6 +150,7 @@ public sealed class ChatGptService : IAIService
     public class EvaluationPayload
     {
         public List<Evaluation> evaluations { get; set; } = new();
+        public List<Problem> problems { get; set; } = new();
         public bool survives { get; set; }
         public string reference { get; set; } = string.Empty;
     }
@@ -223,7 +224,11 @@ public sealed class ChatGptService : IAIService
             options);
 
         var raw = completion.Value.Content[0].Text;
-        return JsonSerializer.Deserialize<EvaluationPayload>(raw)!;
+        var payload = JsonSerializer.Deserialize<EvaluationPayload>(raw)!;
+
+        payload.problems = problems.problems;
+
+        return payload;
     }
 
     /* ---------- utils ---------- */
