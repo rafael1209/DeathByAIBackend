@@ -142,6 +142,7 @@ public sealed class ChatGptService : IAIService
     public class Evaluation
     {
         public int score { get; set; }          // 0-100
+        public int eco { get; set; }          // 0-100
         public string feedback { get; set; } = string.Empty;
         public string future { get; set; } = string.Empty;
     }
@@ -180,9 +181,14 @@ public sealed class ChatGptService : IAIService
                                          Rule-of-thumb:
                                          • 0-39 – fatal • 40-69 – mediocre • 70-89 – strong • 90-100 – excellent.
 
+                                         Also assign **eco points** (0-100) that measure how effectively the solution benefits
+                                         the environment (higher = greater positive ecological impact).  
+                                         Eco points do **not** affect the survive decision.
+
                                          For every problem/solution return:
                                          {{
                                            "score": <int 0-100>,
+                                           "eco": <int 0-100>,
                                            "feedback": "<1–2 sentences>",
                                            "future": "<1–2 sentences describing what happens to the startup in the next 6–12 months>"
                                          }}
@@ -246,6 +252,13 @@ public sealed class ChatGptService : IAIService
             AllowAdditionalProperties = false
         };
         evalSchema.Properties["score"] = new JsonSchemaProperty
+        {
+            Type = JsonObjectType.Integer,
+            Minimum = 0,
+            Maximum = 100,
+            IsRequired = true
+        };
+        evalSchema.Properties["eco"] = new JsonSchemaProperty
         {
             Type = JsonObjectType.Integer,
             Minimum = 0,
