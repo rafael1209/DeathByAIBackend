@@ -9,7 +9,7 @@ We make learning simple, fun, and engaging through interactive lessons, games, a
 
 ## 🏁 Built at GreenHack 2025
 
-This project was created in just **24 hours** as part of the [**GreenHack 2024**](https://greenhack.eu/) hackathon — a European innovation event focused on sustainability, technology, and social impact.
+This project was created in just **24 hours** as part of the [**GreenHack 2025**](https://greenhack.eu/) hackathon — a European innovation event focused on sustainability, technology, and social impact.
 
 Despite the limited time, we built a fully working MVP featuring:
 
