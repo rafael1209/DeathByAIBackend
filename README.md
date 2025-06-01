@@ -3,6 +3,7 @@
 ![image](https://github.com/user-attachments/assets/49b4cf8e-0e34-4607-a902-14678045a94a)
 Death by AI CO Founder is a website created by the team “Diamond Studio” to teach school students and young adults the basics of personal finance. We make learning simple, fun, and engaging through interactive lesson, game, and real-life simulations.
 
+# Setup
 `appsettings.json`
 ```json
 {
