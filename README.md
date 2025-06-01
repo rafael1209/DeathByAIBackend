@@ -7,6 +7,23 @@ We make learning simple, fun, and engaging through interactive lessons, games, a
 
 ---
 
+## 🏁 Built at GreenHack 2025
+
+This project was created in just **24 hours** as part of the [**GreenHack 2024**](https://greenhack.eu/) hackathon — a European innovation event focused on sustainability, technology, and social impact.
+
+Despite the limited time, we built a fully working MVP featuring:
+
+* ✅ AI-assisted personalized finance education
+* ✅ Google OAuth user authentication
+* ✅ Fully functional backend with MongoDB and JWT
+* ✅ Interactive and responsive frontend using Nuxt3
+* ✅ Deployment via Docker & Nginx
+* ✅ Team collaboration and version control on GitHub
+
+We are proud to have created a real, working product in just one day — ready to grow beyond the hackathon.
+
+---
+
 ## 📚 Project Overview
 
 **Death by AI Co-Founder** uses artificial intelligence to personalize financial education and adapt the experience to each user's level.
