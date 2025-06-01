@@ -121,9 +121,15 @@ networks:
 
 ---
 
-## 🧩 Team
+## 🧩 Team – Diamond Studio
 
-**Diamond Studio**
-Project Lead: Danil Tkachenko
-AI & Backend Engineering: Rafael Chasman
-Frontend & UI/UX: \[Contributors from team repo]
+Meet the creators behind **Death by AI Co-Founder**:
+
+| Name                | Role                         | GitHub                                       |
+| ------------------- | ---------------------------- | -------------------------------------------- |
+| **Danil Tkachenko** | Team Lead, Backend Developer | [@danilt2000](https://github.com/danilt2000) |
+| **Rafael Chasman**  | Backend Developer            | [@rafael1209](https://github.com/rafael1209) |
+| **CkutlsGit**       | Frontend Developer           | [@CkutlsGit](https://github.com/CkutlsGit)   |
+| **FUpir**           | UI/UX Designer               | [@FUpir](https://github.com/FUpir)           |
+
+We are **Diamond Studio**, a passionate and innovative team focused on creating engaging educational tools powered by modern technologies and AI.
